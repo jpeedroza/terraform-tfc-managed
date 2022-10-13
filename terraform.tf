@@ -1,12 +1,7 @@
 terraform {
-  required_version = "~> 1.13"
+  required_version = "~> 1.3"
 
-  backend "remote" {
-    organization = var.tfc_root_org
-    workspaces {
-      name = var.tfc_root_workspace
-    }
-  }
+  backend "remote" {}
 }
 
 provider "tfe" {
