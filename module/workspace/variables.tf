@@ -8,7 +8,7 @@ variable "workspace_name" {
 
 variable "terraform_version" {
   type    = string
-  default = "1.13"
+  default = "1.3"
 }
 
 variable "tfe_workspace_variables" {
