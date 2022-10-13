@@ -19,4 +19,9 @@ resource "tfe_workspace_variable_set" "this" {
   count           = length(var.tfe_workspace_variables)
   variable_set_id = tfe_variable.this[count.index].id
   workspace_id    = tfe_workspace.this.id
+
+  depends_on = [
+    tfe_workspace.this,
+    tfe_variable.this,
+  ]
 }
