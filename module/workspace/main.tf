@@ -15,7 +15,7 @@ resource "tfe_variable" "this" {
   workspace_id = tfe_workspace.this.id
 }
 
-resource "tfe_workspace_variable_set" "this" {
+resource "tfe_variable_set" "this" {
   count           = length(var.tfe_workspace_variables)
   variable_set_id = tfe_variable.this[count.index].id
   workspace_id    = tfe_workspace.this.id
