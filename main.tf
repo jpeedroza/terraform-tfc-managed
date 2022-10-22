@@ -1,18 +1,19 @@
-resource "tfe_organization" "this" {
-  count = length(local.config.organizations)
-  name  = local.config.organizations[count.index].name
-  email = local.config.organizations[count.index].email
-
-  lifecycle {
-    prevent_destroy = true
-  }
+module "tfe_organization" {
+  source        = "./module/organization"
+  count         = length(local.config.organizations)
+  name          = local.config.organizations[count.index].name
+  email         = local.config.organizations[count.index].email
+  variable_list = local.config.organizations[count.index].groupVariables[*]
 }
 
 module "tfe_workspaces" {
-  source = "./module/workspace"
+  source                       = "./module/workspace"
+  count                        = length(module.tfe_organization)
+  organization_name            = module.tfe_organization[count.index].organization_name
+  organization_variable_set_id = module.tfe_organization[count.index].variable_set_list
+  workspace_content            = local.config.organizations[count.index].workspaces
 
-  organization_id         = tfe_organization.this[0].id
-  workspace_name          = local.workspaces_list[0].name
-  tfe_workspace_variables = local.workspaces_list[0].variables
-  tags                    = local.workspaces_list[0].tags
+  depends_on = [
+    module.tfe_organization
+  ]
 }
