@@ -2,6 +2,8 @@ locals {
   workspace_name           = var.workspace_content[*].name
   workspace_tags           = var.workspace_content[*].tags
   workspace_execution_mode = var.workspace_content[*].executionMode
+
+  # Create a list of objects which contains the ID associated of the workspace to link and all the content to create a variable 
   tfe_workspace_variables = flatten([
     for workspace in var.workspace_content : [
       for variables in workspace.variables :
@@ -11,6 +13,7 @@ locals {
       if tfe_workspace.name == workspace.name })
   ]])
 
+  # Create a list of objects which contains the ID associated of variable_set to link with the workspace ID 
   tfe_workspace_variables_sets = flatten([
     for index, workspace in var.workspace_content : [
       for index, groups in flatten(workspace.useGroupVariables) : merge(
