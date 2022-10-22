@@ -61,6 +61,8 @@ Utilizado dois módulos internos sendo eles:
 
 #### Objects
 
+| Nome | Tipo |
+|------|------|
 | [tfe_workspace.this](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/tfe_workspace) | resource |
 | [tfe_variable.this](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/tfe_variable) | resource |
 | [tfe_workspace_variable_set.this](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/tfe_workspace_variable_set) | resource |
