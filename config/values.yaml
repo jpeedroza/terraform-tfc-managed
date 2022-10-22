@@ -1,12 +1,61 @@
 organizations:
   - name: "jpedroza-dev"
     email: "pedrozajoaopedro@gmail.com"
+    groupVariables:
+      - name: aws_credentials
+        description: "Credenciais da AWS."
+        global: false
+        variables:
+          - key: "access_key"
+            value: "123"
+            sensitive: true
+          - key: "secret_key"
+            value: "123"
+          - key: "region"
+            value: "us-east-1"
+      - name: do_credentials
+        description: "Credenciais da DO."
+        global: false
+        variables:
+          - key: "do_token"
+            value: "123"
+            sensitive: true
     workspaces:
       - name: "ansible-vault-example"
+        executionMode: local
         variables:
           - key: "root_token"
             value: "root"
+            sensitive: true
             description: "Root token do Vault para acesso do provider."
+        useGroupVariables:
+          - aws_credentials
+          - do_credentials
         tags:
           - ansible
           - vault
+  - name: "jpedroza-prod"
+    email: "pedrozajoaopedro@gmail.com"
+    groupVariables:
+      - name: aws_credentials
+        description: "Credenciais da AWS."
+        global: false
+        variables:
+          - key: "access_key"
+            value: "12345"
+            sensitive: true
+          - key: "secret_key"
+            value: "12345"
+          - key: "region"
+            value: "us-east-2"
+    workspaces:
+      - name: "s3-frontend"
+        executionMode: remote
+        variables:
+          - key: "s3_id"
+            value: "test"
+            sensitive: true
+        useGroupVariables:
+          - aws_credentials
+        tags:
+          - aws
