@@ -20,10 +20,10 @@ resource "tfe_organization" "this" {
 }
 
 resource "tfe_variable_set" "this" {
-  for_each     = { for k, v in var.variable_list : k => v }
-  name         = each.value.name
-  description  = each.value.description
-  global       = each.value.global
+  count        = length(var.variable_list)
+  name         = var.variable_list[count.index].name
+  description  = var.variable_list[count.index].description
+  global       = var.variable_list[count.index].global
   organization = tfe_organization.this.name
 }
 
