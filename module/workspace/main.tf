@@ -15,8 +15,8 @@ locals {
 
   # Create a list of objects which contains the ID associated of variable_set to link with the workspace ID 
   tfe_workspace_variables_sets = flatten([
-    for index, workspace in var.workspace_content : [
-      for index, groups in flatten(workspace.useGroupVariables) : merge(
+    for workspace in var.workspace_content : [
+      for groups in flatten(workspace.useGroupVariables) : merge(
         {
           for id_list in var.organization_variable_set_id :
           "id_set" => id_list.id
