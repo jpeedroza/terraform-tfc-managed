@@ -17,7 +17,7 @@ Módulo de Terraform para gerenciamento e gestão do meu [Terraform Cloud](https
 
 ### Inputs
 
-| Nome | Descrição |
+| Nome | Descrição | Tipo | Valor padrão | Obrigatório |
 |------|-----------|------|--------------|-------------|
 | tfc_token | Token do usuário no Terraform Cloud. | `string` | n/a | **Sim** |
 
