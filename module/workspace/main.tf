@@ -1,27 +1,63 @@
+locals {
+  workspace_name           = var.workspace_content[*].name
+  workspace_tags           = var.workspace_content[*].tags
+  workspace_execution_mode = var.workspace_content[*].executionMode
+  tfe_workspace_variables = flatten([
+    for workspace in var.workspace_content : [
+      for variables in workspace.variables :
+      merge(variables, {
+        for tfe_workspace in tfe_workspace.this :
+        "id" => tfe_workspace.id
+      if tfe_workspace.name == workspace.name })
+  ]])
+
+  tfe_workspace_variables_sets = flatten([
+    for index, workspace in var.workspace_content : [
+      for index, groups in flatten(workspace.useGroupVariables) : merge(
+        {
+          for id_list in var.organization_variable_set_id :
+          "id_set" => id_list.id
+          if id_list.name == groups
+        },
+        {
+          for id_work in tfe_workspace.this :
+          "id_workspace" => id_work.id
+        }
+      )
+    ]
+    if can(workspace.useGroupVariables)
+  ])
+}
+
 resource "tfe_workspace" "this" {
-  organization      = var.organization_id
-  name              = var.workspace_name
+  count             = length(var.workspace_content)
+  name              = local.workspace_name[count.index]
+  execution_mode    = local.workspace_execution_mode[count.index]
+  tag_names         = concat(local.workspace_tags[count.index], ["managed-by-script", "terraform"])
   terraform_version = format("~> %s", var.terraform_version)
-  tag_names         = concat(["managed-by-script", "terraform"], tolist(var.tags))
+  organization      = var.organization_name
 }
 
 resource "tfe_variable" "this" {
-  for_each    = { for k, v in var.tfe_workspace_variables : k => v }
-  key         = each.value.key
-  value       = each.value.value
-  category    = each.value.category
-  description = each.value.description
-
-  workspace_id = tfe_workspace.this.id
-}
-
-resource "tfe_variable_set" "this" {
-  count           = length(var.tfe_workspace_variables)
-  variable_set_id = tfe_variable.this[count.index].id
-  workspace_id    = tfe_workspace.this.id
+  count        = length(local.tfe_workspace_variables)
+  key          = local.tfe_workspace_variables[count.index].key
+  value        = local.tfe_workspace_variables[count.index].value
+  category     = local.tfe_workspace_variables[count.index].category
+  sensitive    = local.tfe_workspace_variables[count.index].sensitive
+  description  = local.tfe_workspace_variables[count.index].description
+  workspace_id = local.tfe_workspace_variables[count.index].id
 
   depends_on = [
-    tfe_workspace.this,
-    tfe_variable.this,
+    tfe_workspace.this
+  ]
+}
+
+resource "tfe_workspace_variable_set" "this" {
+  count           = length(local.tfe_workspace_variables_sets)
+  variable_set_id = local.tfe_workspace_variables_sets[count.index].id_set
+  workspace_id    = local.tfe_workspace_variables_sets[count.index].id_workspace
+
+  depends_on = [
+    tfe_workspace.this
   ]
 }

@@ -1,8 +1,4 @@
-variable "organization_id" {
-  type = string
-}
-
-variable "workspace_name" {
+variable "organization_name" {
   type = string
 }
 
@@ -11,17 +7,25 @@ variable "terraform_version" {
   default = "1.3"
 }
 
-variable "tfe_workspace_variables" {
+variable "workspace_content" {
   type = list(object({
-    key         = string
-    value       = string
-    category    = optional(string, "terraform")
-    description = optional(string, "Created using the repo https://github.com/jpeedroza/terraform-tfc-managed")
+    name          = string
+    executionMode = string
+    variables = list(object({
+      key         = string
+      value       = string
+      category    = optional(string, "terraform")
+      description = optional(string, "Created using the repo https://github.com/jpeedroza/terraform-tfc-managed")
+      sensitive   = optional(bool, false)
+    }))
+    useGroupVariables = list(string)
+    tags              = list(string)
   }))
 }
 
-variable "tags" {
-  type    = set(string)
-  default = []
+variable "organization_variable_set_id" {
+  type = list(object({
+    name = string
+    id   = string
+  }))
 }
-
