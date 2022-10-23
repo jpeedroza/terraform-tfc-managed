@@ -80,11 +80,6 @@ Utilizado dois módulos internos sendo eles:
 
 Sem nenhum no momento
 
-## To Fix
-
-- Adicionar mais de um workspace por organization
-- Opção de não ter variaveis ou groupVariables nos workspaces
-
 ## :memo: Licença
 
 [Apache](LICENSE)

@@ -3,7 +3,7 @@ module "tfe_organization" {
   count         = length(local.config.organizations)
   name          = local.config.organizations[count.index].name
   email         = local.config.organizations[count.index].email
-  variable_list = local.config.organizations[count.index].groupVariables[*]
+  variable_list = try(local.config.organizations[count.index].groupVariables[*], [])
 }
 
 module "tfe_workspaces" {
