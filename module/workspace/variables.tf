@@ -11,14 +11,14 @@ variable "workspace_content" {
   type = list(object({
     name          = string
     executionMode = string
-    variables = list(object({
+    variables = optional(list(object({
       key         = string
       value       = string
       category    = optional(string, "terraform")
       description = optional(string, "Created using the repo https://github.com/jpeedroza/terraform-tfc-managed")
       sensitive   = optional(bool, false)
-    }))
-    useGroupVariables = list(string)
+    })))
+    useGroupVariables = optional(list(string))
     tags              = list(string)
   }))
 }

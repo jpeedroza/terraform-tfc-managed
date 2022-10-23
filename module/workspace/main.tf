@@ -11,7 +11,9 @@ locals {
         for tfe_workspace in tfe_workspace.this :
         "id" => tfe_workspace.id
       if tfe_workspace.name == workspace.name })
-  ]])
+    ]
+    if workspace.variables != null
+  ])
 
   # Create a list of objects which contains the ID associated of variable_set to link with the workspace ID 
   tfe_workspace_variables_sets = flatten([
@@ -25,10 +27,11 @@ locals {
         {
           for id_work in tfe_workspace.this :
           "id_workspace" => id_work.id
+          if id_work.name == workspace.name
         }
       )
     ]
-    if can(workspace.useGroupVariables)
+    if workspace.useGroupVariables != null
   ])
 }
 
