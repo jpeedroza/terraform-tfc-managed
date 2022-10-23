@@ -7,16 +7,13 @@ locals {
         for v in tfe_variable_set.this :
         "id" => v.id
       if v.name == org.name })
-  ]])
+    ]
+  ])
 }
 
 resource "tfe_organization" "this" {
   name  = var.name
   email = var.email
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "tfe_variable_set" "this" {
